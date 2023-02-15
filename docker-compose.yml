@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  db:
+    container_name: db
+    image: mongo
+    volumes:
+      - ./db:/var/lib/mongotest/data
+    networks:
+      - testdev
+
+  server:
+    container_name: server
+    image: server
+    ports:
+      - "9573:8080"
+    build: ./backend
+    depends_on:
+      - db
+    networks:
+      - testdev
+
+  client:
+    container_name: client
+    image: client
+    build: ./frontend
+    ports:
+      - "8173:5173"
+    depends_on:
+      - server
+    networks:
+      - testdev
+
+networks:
+  testdev:
